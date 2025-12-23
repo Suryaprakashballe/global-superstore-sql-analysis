@@ -28,4 +28,6 @@ The goal is to identify sales trends, profit drivers, loss-making categories, an
 
 ## Dataset
 Global Superstore Dataset (public dataset)
+## Visualisation
+https://public.tableau.com/app/profile/surya.balle/viz/GlobalSales_17664978177630/Globalsales?publish=yes
 
