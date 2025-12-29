@@ -1,93 +1,178 @@
-select count(*) from global_superstore2 as total_rows;
+/*
+====================================================
+Global Superstore – Sales & Profit Analysis
+====================================================
+This SQL file analyzes sales performance, profitability,
+customer segments, product categories, discounts, and
+shipping impact using the Global Superstore dataset.
+====================================================
+*/
 
-select * from global_superstore2
-limit 10;
+----------------------------------------------------
+-- 1. Basic Dataset Overview
+----------------------------------------------------
 
-describe global_superstore2;
-
-select order_date_dt,ship_date_dt from global_superstore2
-limit 5;
-
-SELECT 
-  MIN(order_date_dt) AS start_date,
-  MAX(order_date_dt) AS end_date
+-- Total number of records
+SELECT COUNT(*) AS total_rows
 FROM global_superstore2;
 
+-- Preview sample data
+SELECT *
+FROM global_superstore2
+LIMIT 10;
+
+-- Order date range
+SELECT 
+    MIN(order_date_dt) AS start_date,
+    MAX(order_date_dt) AS end_date
+FROM global_superstore2;
+
+-- Check for invalid sales values
 SELECT COUNT(*) AS invalid_sales
 FROM global_superstore2
 WHERE sales <= 0;
 
---Bussiness Analysis
 
-select year(order_date_dt) as yearly, round(sum(sales),2) as total_sales, round(sum(profit),2) as toatl_profit from global_superstore2
-group by yearly
-order by total_sales desc;
+----------------------------------------------------
+-- 2. Time-Based Sales & Profit Analysis
+----------------------------------------------------
 
-select month(order_date_dt) as monthly, round(sum(sales),2) as month_sales, round(sum(profit),2) as month_profit from global_superstore2
-group by monthly
-order by month_sales desc;
+-- Yearly Sales and Profit Trend
+SELECT
+    YEAR(order_date_dt) AS order_year,
+    ROUND(SUM(sales), 2) AS total_sales,
+    ROUND(SUM(profit), 2) AS total_profit
+FROM global_superstore2
+GROUP BY order_year
+ORDER BY order_year;
 
-select region, round(sum(sales),2) as total_sales, round(sum(profit),2) as toatl_profit from global_superstore2
-group by region
-order by total_sales desc;
 
-select category, round(sum(sales),2) as total_sales, round(sum(profit),2) as toatl_profit from global_superstore2
-group by category
-order by total_sales desc;
+-- Monthly Sales and Profit Trend
+SELECT
+    MONTH(order_date_dt) AS order_month,
+    ROUND(SUM(sales), 2) AS total_sales,
+    ROUND(SUM(profit), 2) AS total_profit
+FROM global_superstore2
+GROUP BY order_month
+ORDER BY order_month;
 
-SELECT 
-  sub_category_clean,
-  ROUND(SUM(profit), 2) AS total_profit
+
+----------------------------------------------------
+-- 3. Regional & Category Performance
+----------------------------------------------------
+
+-- Sales and Profit by Region
+SELECT
+    region,
+    ROUND(SUM(sales), 2) AS total_sales,
+    ROUND(SUM(profit), 2) AS total_profit
+FROM global_superstore2
+GROUP BY region
+ORDER BY total_sales DESC;
+
+
+-- Sales and Profit by Category
+SELECT
+    category,
+    ROUND(SUM(sales), 2) AS total_sales,
+    ROUND(SUM(profit), 2) AS total_profit
+FROM global_superstore2
+GROUP BY category
+ORDER BY total_sales DESC;
+
+
+-- Profit by Sub-Category (Loss-Making Products)
+SELECT
+    sub_category_clean,
+    ROUND(SUM(profit), 2) AS total_profit
 FROM global_superstore2
 GROUP BY sub_category_clean
 ORDER BY total_profit ASC;
 
-select discount,category,round(sum(profit),2) as avg_profit from global_superstore2
-group by discount,category
-order by discount;
 
-SELECT 
-  ship_mode,
-  ROUND(SUM(profit), 2) AS total_profit
+----------------------------------------------------
+-- 4. Discount & Shipping Impact Analysis
+----------------------------------------------------
+
+-- Discount vs Profit by Category
+SELECT
+    discount,
+    category,
+    ROUND(SUM(profit), 2) AS total_profit
+FROM global_superstore2
+GROUP BY discount, category
+ORDER BY discount;
+
+
+-- Profit by Shipping Mode
+SELECT
+    ship_mode,
+    ROUND(SUM(profit), 2) AS total_profit
 FROM global_superstore2
 GROUP BY ship_mode
-ORDER BY total_profit desc;
+ORDER BY total_profit DESC;
 
-SELECT segment,ROUND(SUM(sales), 2) AS total_sales,ROUND(SUM(profit), 2) AS total_profit FROM global_superstore2
+
+----------------------------------------------------
+-- 5. Customer Segment Analysis
+----------------------------------------------------
+
+-- Sales and Profit by Customer Segment
+SELECT
+    segment,
+    ROUND(SUM(sales), 2) AS total_sales,
+    ROUND(SUM(profit), 2) AS total_profit
+FROM global_superstore2
 GROUP BY segment
 ORDER BY total_profit DESC;
 
-SELECT `Product ID`,`Product Name`,
-  ROUND(SUM(Sales), 2) AS total_sales,
-  ROUND(SUM(Profit), 2) AS total_profit
+
+----------------------------------------------------
+-- 6. Product-Level Performance
+----------------------------------------------------
+
+-- Top 10 Products by Sales
+SELECT
+    `Product ID`,
+    `Product Name`,
+    ROUND(SUM(sales), 2) AS total_sales,
+    ROUND(SUM(profit), 2) AS total_profit
 FROM global_superstore2
 GROUP BY `Product ID`, `Product Name`
 ORDER BY total_sales DESC
 LIMIT 10;
 
-SELECT `Product ID`,`Product Name`,
-  ROUND(SUM(Sales), 2) AS total_sales,
-  ROUND(SUM(Profit), 2) AS total_profit
+
+-- Bottom 10 Products by Sales
+SELECT
+    `Product ID`,
+    `Product Name`,
+    ROUND(SUM(sales), 2) AS total_sales,
+    ROUND(SUM(profit), 2) AS total_profit
 FROM global_superstore2
 GROUP BY `Product ID`, `Product Name`
-ORDER BY total_sales asc
+ORDER BY total_sales ASC
 LIMIT 10;
 
-SELECT 
-  `Product ID`,
-  `Product Name`,
-  ROUND(AVG(Discount), 2) AS avg_discount,
-  ROUND(AVG(Profit), 2) AS avg_profit
+
+-- High Discount Products and Profitability
+SELECT
+    `Product ID`,
+    `Product Name`,
+    ROUND(AVG(discount), 2) AS avg_discount,
+    ROUND(AVG(profit), 2) AS avg_profit
 FROM global_superstore2
 GROUP BY `Product ID`, `Product Name`
 ORDER BY avg_discount DESC
 LIMIT 10;
 
-SELECT 
-  `Product ID`,
-  `Product Name`,
-  ROUND(AVG(`Shipping Cost`), 2) AS avg_shipping_cost,
-  ROUND(SUM(Profit), 2) AS total_profit
+
+-- High Shipping Cost Products
+SELECT
+    `Product ID`,
+    `Product Name`,
+    ROUND(AVG(`Shipping Cost`), 2) AS avg_shipping_cost,
+    ROUND(SUM(profit), 2) AS total_profit
 FROM global_superstore2
 GROUP BY `Product ID`, `Product Name`
 ORDER BY avg_shipping_cost DESC
