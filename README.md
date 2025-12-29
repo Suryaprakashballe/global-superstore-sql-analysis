@@ -77,7 +77,7 @@ The Tableau dashboard provides a consolidated view of:
 - Impact of discounts and shipping modes
 - Top and bottom performing products
 
-![Global Superstore Dashboard](images/global_superstore_dashboard.png)
+![Global Superstore Dashboard](Sales_Dashboard.png)
 
 ---
 
