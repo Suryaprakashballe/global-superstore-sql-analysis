@@ -15,7 +15,7 @@ profit drivers, loss-making areas, and opportunities for operational improvement
 ---
 
 ## 📂 Dataset
-- **Source:** Global Superstore Dataset (public dataset)
+- **Source:** Dataset from Kaggle: “Global Superstore” dataset
 - **Data Type:** Transaction-level sales data
 - **Key Fields:**
   - Order Date, Ship Date
@@ -24,6 +24,7 @@ profit drivers, loss-making areas, and opportunities for operational improvement
   - Region, Segment, Ship Mode
 - **Note:**
   The dataset is included only for analysis purposes and is publicly available.
+
 
 ---
 
